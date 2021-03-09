@@ -10,7 +10,7 @@ def resize(image, window_height=600):
     return image
 
 
-def resize_to_right_ratio(img, interpolation=cv2.INTER_LINEAR, width=670):
+def resize_to_right_ratio(img, interpolation=cv2.INTER_LINEAR, width=695):
     ratio_width = width / img.shape[1]
     # Resize
     return cv2.resize(img, None, fx=ratio_width, fy=ratio_width, interpolation=interpolation)
@@ -202,7 +202,8 @@ def draw_lines(lines, img):
                      (255, 255, 255), 2)
 
 
-def merge_nearby_lines(lines, rho_distance=30, degree_distance=20):
+def merge_nearby_lines(lines, rho_distance=15, degree_distance=20
+                       ):
     """ Merges nearby lines with the specified rho and degree distance.
     Args:
         lines (list): A list of lines (rho, theta), see OpenCV HoughLines
