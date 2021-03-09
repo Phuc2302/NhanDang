@@ -1,6 +1,10 @@
 import cv2
 import numpy as np
 import cv_utils
+from functools import cmp_to_key
+import matplotlib.pyplot as plt
+import tensorflow as tf
+import argparse
 
 
 def resize(image, window_height=600):
@@ -24,8 +28,8 @@ def get_adaptive_binary_image(img):
 
 img = cv2.imread('D:/project/3.jpg',cv2.IMREAD_GRAYSCALE)
 img_binary= get_adaptive_binary_image(img)
-cv2.imshow('hah',img_binary)
-cv2.waitKey(0)
+# cv2.imshow('hah',img_binary)
+# cv2.waitKey(0)
 
 
 def get_rotated_yatzy_sheet(img, img_binary):
@@ -311,14 +315,184 @@ def __should_merge_lines(line_a, line_b, rho_distance, theta_distance):
     if (rho_diff < rho_distance and diff_theta < theta_distance):
         return True
     return False
+def get_yatzy_cells_bounding_rects(img_binary_grid, num_rows_in_grid=19, max_num_cols=20):
+    """ Returns a list with sorted bounding rect for every yatzy grid cell. """
+    # Now we have the grid in img_binary_grid
+    # Lets start identifying the cells by getting all contours from the vertical / horizontal binary img grid
+    binary_grid_contours, _ = cv2.findContours(img_binary_grid, cv2.RETR_LIST,
+                                               cv2.CHAIN_APPROX_SIMPLE)
+
+    sheet_width = img_binary_grid.shape[1]
+
+    cell_min_width = (sheet_width/max_num_cols)
+
+    # Clean grid from small contours
+    yatzy_cells_bounding_rects = [cv2.boundingRect(cnt) for cnt in binary_grid_contours if cv_utils.wider_than(cnt, cell_min_width)]
+
+    # Define resolution for cell area "bins"
+    cell_resolution = (sheet_width/50) ** 2
+
+    _, _, target_width, target_height = __get_most_common_area(yatzy_cells_bounding_rects, cell_resolution)
+
+    if len(yatzy_cells_bounding_rects) < num_rows_in_grid:
+        print("ERROR: Not enough grid cells found.")
+
+    yatzy_cells_bounding_rects = list(filter(lambda x: __filter_by_dim(x, target_width, target_height), yatzy_cells_bounding_rects))
+
+    num_cells = len(yatzy_cells_bounding_rects)
+    correct_num_cells_in_grid = (num_cells >= num_rows_in_grid and num_cells % num_rows_in_grid == 0)
+
+    if not correct_num_cells_in_grid:
+        print("ERROR: not correct number fo cells found in grid, num found:", num_cells)
+
+    yatzy_grid_bounding_rect = concatenate_bounding_rects(yatzy_cells_bounding_rects)
+
+    shift_x, shift_y, _, _ = yatzy_grid_bounding_rect
+    # We shift the bounding rect because every bounding rect of yatzy cell is relative the original image.
+    # We want the yatzy cell with index 0 to be located at position (0,0) i.e top left corner of image.
+    yatzy_cells_bounding_rects = list(map(lambda x: cv_utils.move_bounding_rect(x, -shift_x, -shift_y), yatzy_cells_bounding_rects))
+    yatzy_cells_bounding_rects = sorted(
+        yatzy_cells_bounding_rects, key=cmp_to_key(__sort_by_upper_left_pos))
+    return yatzy_cells_bounding_rects, yatzy_grid_bounding_rect
+
+def __filter_by_dim(val, target_width, target_height):
+    # Remove cells outside of target width/height
+    offset_width = target_width * 0.3
+    offset_height = target_height * 0.3
+    _, _, w, h = val
+    return target_width - offset_width < w < target_width + offset_width and target_height - offset_height < h < target_height + offset_height
+
+def __get_most_common_area(bounding_rects, cell_resolution):
+    cell_areas = [int(w*h/cell_resolution) for _, _, w, h in bounding_rects]
+
+    # 1-Dimensional groups
+    counts = np.bincount(cell_areas)
+    return bounding_rects[np.argmax(counts)]
+
+def concatenate_bounding_rects(bounding_rects):
+    # Concatenate into one big bounding rect
+    temp_arr = []
+    for x, y, w, h in bounding_rects:
+        temp_arr.append((x, y))
+        temp_arr.append((x+w, y+h))
+
+    return cv2.boundingRect(np.asarray(temp_arr))
+def generate_yatzy_sheet(img, num_rows_in_grid=19, max_num_cols=20):
+    img = resize_to_right_ratio(img)
+    # Step 1
+    img_adaptive_binary = get_adaptive_binary_image(img)
+
+    cv_utils.show_window('img_adaptive_binary', img_adaptive_binary)
+
+    # Step2 and 3, Find the biggest contour and rotate it
+    img_yatzy_sheet, img_binary_yatzy_sheet = get_rotated_yatzy_sheet(img, img_adaptive_binary)
+
+    # Step 4, Get a painted grid with vertical / horizontal lines
+    img_binary_grid, img_binary_only_numbers = get_yatzy_grid(img_binary_yatzy_sheet)
+
+    # Step 5, Get every yatzy grid cell as a sorted bounding rect in order to later locate numbers to correct cell
+    yatzy_cells_bounding_rects, grid_bounding_rect = get_yatzy_cells_bounding_rects(img_binary_grid, num_rows_in_grid, max_num_cols)
+
+    # Get the area of the yatzy grid from different versions of raw img
+    img_binary_only_numbers = cv_utils.get_bounding_rect_content(img_binary_only_numbers, grid_bounding_rect)
+    img_binary_yatzy_sheet = cv_utils.get_bounding_rect_content(img_binary_yatzy_sheet, grid_bounding_rect)
+    img_yatzy_sheet = cv_utils.get_bounding_rect_content(img_yatzy_sheet, grid_bounding_rect)
+
+    return img_yatzy_sheet, img_binary_yatzy_sheet, img_binary_only_numbers, yatzy_cells_bounding_rects
+mnist = tf.keras.datasets.mnist
+
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+
+
+y_train = y_train.astype('float32')
+y_test = y_test.astype('float32')
+
+
+# Create binary image
+mask = x_train > 127.5
+maskb = x_train <= 127.5
+x_train[mask] = 255
+x_train[maskb] = 0
+
+# Create binary image
+mask_test = x_test > 127.5
+mask_test_b = x_test <= 127.5
+x_test[mask_test] = 255
+x_test[mask_test_b] = 0
+
+# Shift to -1 to 1
+x_train, x_test = (x_train - 127.5) / 127.5, (x_test - 127.5) / 127.5
+
+
+# Reserve 10,000 samples for validation
+x_val = x_train[-10000:]
+y_val = y_train[-10000:]
+x_train = x_train[:-10000]
+y_train = y_train[:-10000]
+
+# Simple CNN architecture with 3 conv layers
+# INPUT -> CONV3-32 -> RELU -> CONV3-32 -> RELU  -> CONV3-32 -> RELU -> POOL -> DROPOUT -> FC -> RELU -> DROPOUT -> SOFTMAX
+model = tf.keras.models.Sequential([
+    tf.keras.layers.Conv2D(32, kernel_size=(3, 3),
+                           activation='relu',
+                           input_shape=(28, 28, 1)),
+    tf.keras.layers.Conv2D(32, kernel_size=(3, 3),
+                           activation='relu'),
+    tf.keras.layers.Conv2D(32, kernel_size=(3, 3),
+                           activation='relu'),
+    # regularization
+    tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
+    # regularization
+    tf.keras.layers.Dropout(0.5),
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(128, activation='relu'),
+    # regularization
+    tf.keras.layers.Dropout(0.25),
+    tf.keras.layers.Dense(10, activation='softmax')
+])
+
+model.summary()
+model.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
+
+
+x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1], x_train.shape[2], 1))
+x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1], x_test.shape[2], 1))
+x_val = np.reshape(x_val, (x_val.shape[0], x_val.shape[1], x_val.shape[2], 1))
+
+
+model_data = model.fit(x_train, y_train, epochs=10, batch_size=128, validation_data=(x_val, y_val))
+model.evaluate(x_test, y_test, verbose=2)
+
+# plot
+plt.subplot(2, 1, 1)
+plt.plot(model_data.history['accuracy'])
+plt.plot(model_data.history['val_accuracy'])
+plt.title('model accuracy')
+plt.ylabel('accuracy')
+plt.xlabel('epoch')
+plt.legend(['train acc', 'val acc'], loc='lower right')
+plt.subplot(2, 1, 2)
+plt.plot(model_data.history['loss'])
+plt.plot(model_data.history['val_loss'])
+plt.title('model loss')
+plt.ylabel('loss')
+plt.xlabel('epoch')
+plt.legend(['train loss', 'val loss'], loc='upper right')
+plt.tight_layout()
+plt.show()
+
+
+model.save('./models/model_tensorflow')
 
 
 #img = cv2.imread("D:/project/ha.jpg",cv2.IMREAD_GRAYSCALE)
 #img_binary = get_adaptive_binary_image(resize_to_right_ratio(img, width=550))
 #img_get_rotated_yatzy_sheet=(get_rotated_yatzy_sheet(img,img_binary))
 img_binary_sheet= get_rotated_yatzy_sheet(img,img_binary)
-cv2.imshow('img',img_binary_sheet)
-cv2.waitKey(0)
+# cv2.imshow('img',img_binary_sheet)
+# cv2.waitKey(0)
 cv2.imshow('image' , get_yatzy_grid(img_binary_sheet))
 cv2.waitKey(0)
 cv2.destroyAllWindows()
