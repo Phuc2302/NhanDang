@@ -24,6 +24,7 @@ img_yatzy_sheet, img_binary_yatzy_sheet, img_binary_grid, yatzy_cells_bounding_r
 img_yatzy_cells = img_binary_grid.copy()
 cv_utils.draw_bounding_rects(img_yatzy_cells, yatzy_cells_bounding_rects)
 
+digit_contours = cv_utils.get_external_contours(img_binary_grid)
 
 cv2.imshow('image' , img_binary_yatzy_sheet)
 cv2.waitKey(0)
@@ -31,5 +32,6 @@ cv2.imshow('image' , img_binary_grid)
 cv2.waitKey(0)
 cv2.imshow('image' , img_yatzy_cells)
 cv2.waitKey(0)
+
 
 cv2.destroyAllWindows()

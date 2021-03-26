@@ -113,7 +113,7 @@ def draw_bounding_rects(img, bounding_rects):
     """ Draw the rectangles and their index on the img based. """
     for index, cell in enumerate(bounding_rects):
         x, y, w, h = cell
-        cv2.putText(img, str(index), (x, y + int(h/2)), cv2.FONT_HERSHEY_SIMPLEX, .4, (127, 255, 0), 1, cv2.LINE_AA)
+        cv2.putText(img, str(index), (x, y + int(h/3)), cv2.FONT_HERSHEY_SIMPLEX, .4, (127, 255, 0), 1, cv2.LINE_AA)
         cv2.rectangle(img, cell, (127, 255, 0), 1)
 
 

@@ -227,7 +227,7 @@ def get_yatzy_grid(img_binary_sheet):
     structuring_line_size = int(width / 5.0)
 
     # Try to remove all vertical stuff in the image,
-    element = cv2.getStructuringElement(cv2.MO.RPH_RECT, (structuring_line_size, 1))
+    element = cv2.getStructuringElement(cv2.MORPH_RECT, (structuring_line_size, 1))
     sheet_binary_grid_horizontal = cv2.morphologyEx(sheet_binary_grid_horizontal, cv2.MORPH_OPEN, element)
 
     # Try to remove all horizontal stuff in image, Morph OPEN: Keep everything that fits structuring element i.e vertical lines
