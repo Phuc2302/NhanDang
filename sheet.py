@@ -34,7 +34,7 @@ def __should_merge_lines(line_a, line_b, rho_distance, theta_distance):
         return True
     return False
 
-def resize_to_right_ratio(img, interpolation=cv2.INTER_LINEAR, width=695):
+def resize_to_right_ratio(img, interpolation=cv2.INTER_LINEAR, width=700):
     ratio_width = width / img.shape[1]
     # Resize
     return cv2.resize(img, None, fx=ratio_width, fy=ratio_width, interpolation=interpolation)
@@ -101,6 +101,9 @@ def get_merged_line(lines, line_a, rho_distance, degree_distance):
 def get_adaptive_binary_image(img):
     # img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     #img = (cv2.GaussianBlurimg, (5, 5), 0)
+
+    # gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    # gray = cv2.GaussianBlur(gray, (5, 5), 0)
     ret, th1 = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY_INV)
     return cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 7,10)
 
@@ -164,18 +167,17 @@ def get_rotated_yatzy_sheet(img, img_binary):
     img_raw_yatzy_sheet = resize_to_right_ratio(img_raw_yatzy_sheet)
     img_binary_sheet_rotated = get_adaptive_binary_image(img_raw_yatzy_sheet)
 
-    return img_binary_sheet_rotated
+    return img_raw_yatzy_sheet, img_binary_sheet_rotated
 
-def generate_yatzy_sheet(img, num_rows_in_grid=40, max_num_cols=20):
+def generate_yatzy_sheet(img, num_rows_in_grid=37, max_num_cols=20):
     # img = resize_to_right_ratio(img)
     # Step 1
     img_adaptive_binary = get_adaptive_binary_image(img)
 
-    # cv_utils.show_window('img_adaptive_binary', img_adaptive_binary)
+    cv_utils.show_window('img_adaptive_binary', img_adaptive_binary)
 
     # Step2 and 3, Find the biggest contour and rotate it
-    img_yatzy_sheet = get_rotated_yatzy_sheet(img, img_adaptive_binary)
-    img_binary_yatzy_sheet = get_rotated_yatzy_sheet(img, img_adaptive_binary)
+    img_yatzy_sheet, img_binary_yatzy_sheet = get_rotated_yatzy_sheet(img, img_adaptive_binary)
 
     # Step 4, Get a painted grid with vertical / horizontal lines
     img_binary_grid, img_binary_only_numbers = get_yatzy_grid(img_binary_yatzy_sheet)
@@ -185,10 +187,10 @@ def generate_yatzy_sheet(img, num_rows_in_grid=40, max_num_cols=20):
 
     # Get the area of the yatzy grid from different versions of raw img
     img_binary_only_numbers = cv_utils.get_bounding_rect_content(img_binary_only_numbers, grid_bounding_rect)
-    # img_binary_yatzy_sheet = cv_utils.get_bounding_rect_content(img_binary_yatzy_sheet, grid_bounding_rect)
-    # img_yatzy_sheet = cv_utils.get_bounding_rect_content(img_yatzy_sheet, grid_bounding_rect)
+    img_binary_yatzy_sheet = cv_utils.get_bounding_rect_content(img_binary_yatzy_sheet, grid_bounding_rect)
+    img_yatzy_sheet = cv_utils.get_bounding_rect_content(img_yatzy_sheet, grid_bounding_rect)
 
-    return img_yatzy_sheet, img_binary_yatzy_sheet, img_binary_grid, yatzy_cells_bounding_rects
+    return img_yatzy_sheet, img_binary_yatzy_sheet, img_binary_only_numbers, yatzy_cells_bounding_rects
 
 def get_yatzy_grid(img_binary_sheet):
     """ Returns a binary image with a grid and the input image containing only horizontal/vertical lines.
@@ -218,7 +220,7 @@ def get_yatzy_grid(img_binary_sheet):
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
     img_binary_sheet_morphed = cv2.morphologyEx(img_binary_sheet_morphed, cv2.MORPH_DILATE, kernel)
 
-    cv_utils.show_window('morph_dilate_binary_img', img_binary_sheet_morphed)
+    # cv_utils.show_window('morph_dilate_binary_img', img_binary_sheet_morphed)
 
     sheet_binary_grid_horizontal = img_binary_sheet_morphed.copy()
     sheet_binary_grid_vertical = img_binary_sheet_morphed.copy()
@@ -236,13 +238,12 @@ def get_yatzy_grid(img_binary_sheet):
     sheet_binary_grid_vertical = cv2.morphologyEx(sheet_binary_grid_vertical, cv2.MORPH_OPEN, element)
 
     # Concatenate the vertical/horizontal lines into grid
-    img_binary_sheet_morphed = cv2.add(
-        sheet_binary_grid_vertical, sheet_binary_grid_horizontal)
+    img_binary_sheet_morphed = cv2.add(sheet_binary_grid_vertical, sheet_binary_grid_horizontal)
 
-    # cv_utils.show_window("morph_keep_only_horizontal_lines",
-    #                      sheet_binary_grid_horizontal)
-    # cv_utils.show_window("morph_keep_only_vertical_lines", sheet_binary_grid_vertical)
-    # cv_utils.show_window("concatenate_vertical_horizontal", img_binary_sheet_morphed)
+    cv_utils.show_window("morph_keep_only_horizontal_lines",
+                         sheet_binary_grid_horizontal)
+    cv_utils.show_window("morph_keep_only_vertical_lines", sheet_binary_grid_vertical)
+    cv_utils.show_window("concatenate_vertical_horizontal", img_binary_sheet_morphed)
     # """
     #     Time to get a solid grid, from what we see  above, the grid is still not fully filled (sometimes)
     #     since the paper is not fully straight on the table etc. For this we use Hough Transform
@@ -277,11 +278,48 @@ def get_yatzy_grid(img_binary_sheet):
     # Remove the grid from the binary image an keep only the digits.
     img_binary_sheet_only_digits = cv2.bitwise_and(img_binary_sheet, 255 - img_binary_sheet_morphed)
 
-    # cv_utils.show_window("yatzy_grid_binary_lines", img_binary_grid)
+    cv_utils.show_window("yatzy_grid_binary_lines", img_binary_grid)
 
     return   img_binary_grid, img_binary_sheet_only_digits
 
-def get_yatzy_cells_bounding_rects(img_binary_grid, num_rows_in_grid=19, max_num_cols=20):
+
+def __filter_by_dim(val, target_width, target_height):
+    # Remove cells outside of target width/height
+    offset_width = target_width * 0.6
+    offset_height = target_height * 0.6
+    _, _, w, h = val
+    return target_width - offset_width < w < target_width + offset_width and target_height - offset_height < h < target_height + offset_height
+
+
+def __get_most_common_area(bounding_rects, cell_resolution):
+    cell_areas = [int(w*h/cell_resolution) for _, _, w, h in bounding_rects]
+
+    # 1-Dimensional groupsgenerate_yatzy_sheet
+    counts = np.bincount(cell_areas)
+    return bounding_rects[np.argmax(counts)]
+
+
+def validate_and_find_yatzy_cell(cells, bounding_rect):
+    """ Finds a corresponding cell for the bounding_rect. """
+    roi_x, roi_y, roi_w, roi_h = bounding_rect
+    roi_center_x = roi_x + int(roi_w/2)
+    roi_center_y = roi_y + int(roi_h/2)
+    _, _, cell_width, cell_height = cells[0]
+    # Discard noise contours
+    if(not 2 < roi_w < cell_width or not (cell_height/MIN_CELL_DIGIT_HEIGHT_RATIO) < roi_h < cell_height):
+        return None
+
+    found_cell = None
+    for rect in cells:
+        x, y, w, h = rect
+        # Verify which cell roi_center belongs to
+        if(x < roi_center_x < x + w and y < roi_center_y < y + h):
+            found_cell = rect
+            break
+
+    return found_cell
+
+def get_yatzy_cells_bounding_rects(img_binary_grid, num_rows_in_grid=36, max_num_cols=20):
     """ Returns a list with sorted bounding rect for every yatzy grid cell. """
     # Now we have the grid in img_binary_grid
     # Lets start identifying the cells by getting all contours from the vertical / horizontal binary img grid
@@ -319,40 +357,3 @@ def get_yatzy_cells_bounding_rects(img_binary_grid, num_rows_in_grid=19, max_num
     yatzy_cells_bounding_rects = list(map(lambda x: cv_utils.move_bounding_rect(x, -shift_x, -shift_y), yatzy_cells_bounding_rects))
     yatzy_cells_bounding_rects = sorted(yatzy_cells_bounding_rects, key=cmp_to_key(sort_by_upper_left_pos))
     return yatzy_cells_bounding_rects, yatzy_grid_bounding_rect
-
-
-def __filter_by_dim(val, target_width, target_height):
-    # Remove cells outside of target width/height
-    offset_width = target_width * 0.3
-    offset_height = target_height * 0.3
-    _, _, w, h = val
-    return target_width - offset_width < w < target_width + offset_width and target_height - offset_height < h < target_height + offset_height
-
-
-def __get_most_common_area(bounding_rects, cell_resolution):
-    cell_areas = [int(w*h/cell_resolution) for _, _, w, h in bounding_rects]
-
-    # 1-Dimensional groupsgenerate_yatzy_sheet
-    counts = np.bincount(cell_areas)
-    return bounding_rects[np.argmax(counts)]
-
-
-def validate_and_find_yatzy_cell(cells, bounding_rect):
-    """ Finds a corresponding cell for the bounding_rect. """
-    roi_x, roi_y, roi_w, roi_h = bounding_rect
-    roi_center_x = roi_x + int(roi_w/2)
-    roi_center_y = roi_y + int(roi_h/2)
-    _, _, cell_width, cell_height = cells[0]
-    # Discard noise contours
-    if(not 2 < roi_w < cell_width or not (cell_height/MIN_CELL_DIGIT_HEIGHT_RATIO) < roi_h < cell_height):
-        return None
-
-    found_cell = None
-    for rect in cells:
-        x, y, w, h = rect
-        # Verify which cell roi_center belongs to
-        if(x < roi_center_x < x + w and y < roi_center_y < y + h):
-            found_cell = rect
-            break
-
-    return found_cell

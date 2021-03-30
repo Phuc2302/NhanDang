@@ -97,8 +97,8 @@ def get_com_shift(img):
     height, width = img.shape
     cX = int(M["m10"] / M["m00"])
     cY = int(M["m01"] / M["m00"])
-    shift_x = np.round(width/2.0-cX).astype(int)
-    shift_y = np.round(height/2.0-cY).astype(int)
+    shift_x = np.round(width/2-cX).astype(int)
+    shift_y = np.round(height/2-cY).astype(int)
     return shift_x, shift_y
 
 
@@ -113,14 +113,13 @@ def draw_bounding_rects(img, bounding_rects):
     """ Draw the rectangles and their index on the img based. """
     for index, cell in enumerate(bounding_rects):
         x, y, w, h = cell
-        cv2.putText(img, str(index), (x, y + int(h/3)), cv2.FONT_HERSHEY_SIMPLEX, .4, (127, 255, 0), 1, cv2.LINE_AA)
-        cv2.rectangle(img, cell, (127, 255, 0), 1)
+        cv2.putText(img, str(index), (x, y + int(h/2)), cv2.FONT_HERSHEY_SIMPLEX, .6, (100, 200, 0), 1, cv2.LINE_AA)
+        cv2.rectangle(img, cell, (0, 255, 0), 1)
 
 
 def get_external_contours(img_1_channel):
     """ Utilize OpenCV findContours function """
-    contours, _ = cv2.findContours(
-        img_1_channel, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours, _ = cv2.findContours(img_1_channel, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     return contours
 
 
@@ -153,6 +152,6 @@ def show_window(name, image, debug=False):
     cv2.imwrite("./assets/output/" + name + ".png", image)
     if debug or DEBUG:
         cv2.namedWindow(name, cv2.WINDOW_NORMAL)
-        cv2.resizeWindow(name, (600, 600))
+        cv2.resizeWindow(name, (700, 700))
         cv2.imshow(name, image)
         cv2.waitKey(0)

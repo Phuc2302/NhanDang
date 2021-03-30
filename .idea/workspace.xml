@@ -2,9 +2,25 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e6ff2bcd-3013-4295-860a-f4e304fdc439" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/assets/output/biggest_contour.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/output/concatenate_vertical_horizontal.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/output/img_adaptive_binary.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/output/img_binary_only_numbers.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/output/img_binary_yatzy_sheet.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/output/img_yatzy_cells.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/output/img_yatzy_sheet.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/output/min_area_rect_original_image.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/output/morph_keep_only_horizontal_lines.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/output/morph_keep_only_vertical_lines.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/output/yatzy_grid_binary_lines.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/test/digits.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/test/test.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/train.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cv_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/cv_utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/python_work.py" beforeDir="false" afterPath="$PROJECT_DIR$/python_work.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sheet.py" beforeDir="false" afterPath="$PROJECT_DIR$/sheet.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/train.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,12 +46,15 @@
     </file-type-list>
   </component>
   <component name="ProjectId" id="1pVHrtvPwutCU1U6R3OxWnDMZwA" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_opened_file_path" value="$USER_HOME$/Downloads/yatzy-score-sheet-detection-master" />
@@ -179,5 +198,8 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
 </project>
