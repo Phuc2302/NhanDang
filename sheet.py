@@ -98,15 +98,20 @@ def get_merged_line(lines, line_a, rho_distance, degree_distance):
     return line_a
 
 
+# def get_adaptive_binary_image(img):
+#     # img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+#     #img = (cv2.GaussianBlurimg, (5, 5), 0)
+#
+#     # gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+#     # gray = cv2.GaussianBlur(gray, (5, 5), 0)
+#     ret, th1 = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY_INV)
+#     return cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 7,10)
 def get_adaptive_binary_image(img):
-    # img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    #img = (cv2.GaussianBlurimg, (5, 5), 0)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    # gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    # gray = cv2.GaussianBlur(gray, (5, 5), 0)
-    ret, th1 = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY_INV)
-    return cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 7,10)
+    gray = cv2.GaussianBlur(gray, (5, 5), 0)
 
+    return cv2.adaptiveThreshold(gray, 255,  cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 7, 4)
 
 def merge_nearby_lines(lines, rho_distance=15, degree_distance=20):
     """ Merges nearby lines with the specified rho and degree distance.
@@ -164,7 +169,7 @@ def get_rotated_yatzy_sheet(img, img_binary):
 
     img_raw_yatzy_sheet = cv_utils.get_rotated_image_from_contour(img, biggest_contour)
 
-    img_raw_yatzy_sheet = resize_to_right_ratio(img_raw_yatzy_sheet)
+    # img_raw_yatzy_sheet = resize_to_right_ratio(img_raw_yatzy_sheet)
     img_binary_sheet_rotated = get_adaptive_binary_image(img_raw_yatzy_sheet)
 
     return img_raw_yatzy_sheet, img_binary_sheet_rotated

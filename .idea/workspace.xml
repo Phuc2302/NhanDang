@@ -2,25 +2,23 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e6ff2bcd-3013-4295-860a-f4e304fdc439" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/assets/output/biggest_contour.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/output/concatenate_vertical_horizontal.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/output/img_adaptive_binary.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/output/img_binary_only_numbers.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/output/img_binary_yatzy_sheet.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/output/img_yatzy_cells.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/output/img_yatzy_sheet.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/output/min_area_rect_original_image.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/output/morph_keep_only_horizontal_lines.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/output/morph_keep_only_vertical_lines.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/output/yatzy_grid_binary_lines.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/test/digits.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/test/test.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/train.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/output/biggest_contour.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/output/biggest_contour.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/output/concatenate_vertical_horizontal.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/output/concatenate_vertical_horizontal.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/output/img_adaptive_binary.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/output/img_adaptive_binary.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/output/img_binary_only_numbers.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/output/img_binary_only_numbers.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/output/img_binary_yatzy_sheet.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/output/img_binary_yatzy_sheet.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/output/img_yatzy_cells.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/output/img_yatzy_cells.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/output/img_yatzy_sheet.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/output/img_yatzy_sheet.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/output/min_area_rect_original_image.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/output/min_area_rect_original_image.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/output/morph_keep_only_horizontal_lines.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/output/morph_keep_only_horizontal_lines.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/output/morph_keep_only_vertical_lines.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/output/morph_keep_only_vertical_lines.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/output/yatzy_grid_binary_lines.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/output/yatzy_grid_binary_lines.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/test/digits.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/assets/test/digits.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/test/test.jpg" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/cv_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/cv_utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/python_work.py" beforeDir="false" afterPath="$PROJECT_DIR$/python_work.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sheet.py" beforeDir="false" afterPath="$PROJECT_DIR$/sheet.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/train.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -145,7 +143,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="yatzy_sheet" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="train" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="NhanDang" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -153,11 +151,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$USER_HOME$/Downloads/yatzy-score-sheet-detection-master" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/models" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$USER_HOME$/Downloads/yatzy-score-sheet-detection-master/yatzy_sheet.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/models/train.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -169,10 +167,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.python_work" />
-        <item itemvalue="Python.sheet" />
         <item itemvalue="Python.cv_utils" />
         <item itemvalue="Python.main" />
-        <item itemvalue="Python.yatzy_sheet" />
+        <item itemvalue="Python.train" />
+        <item itemvalue="Python.sheet" />
       </list>
     </recent_temporary>
   </component>

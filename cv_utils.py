@@ -62,7 +62,7 @@ def get_rotated_image_from_contour(img, contour):
         temp_height = height
         height = width
         width = temp_height
-        angle_degrees = 90 + angle_degrees
+        angle_degrees =   angle_degrees - 90
 
     # Reassign rotated rect with updated values
     rotated_rect = ((x_center, y_center), (width, height), angle_degrees)
@@ -80,15 +80,14 @@ def get_rotated_image_from_contour(img, contour):
     # Prepare for rotation transformation
     src_pts = rect_box_points.astype("float32")
     dst_pts = np.array([
-        [0, height-1],  # Bottom Left
+        [1, height-1],  # Bottom Left
         [0, 0],  # Top Left
         [width-1, 0],  # Top Right
     ], dtype="float32")
 
     # Affine rotation transformation
     ROTATION_MAT = cv2.getAffineTransform(src_pts[:3], dst_pts)
-    return cv2.warpAffine(
-        img, ROTATION_MAT, (width, height))
+    return cv2.warpAffine(img, ROTATION_MAT, (width, height))
 
 
 def get_com_shift(img):

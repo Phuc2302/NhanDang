@@ -15,7 +15,7 @@ predict_model = tf.keras.models.load_model('./models/model_tensorflow')
 predict_model.summary()
 
 # img_path = 'D:/Study/AI/Python/NhanDang/Main/digits.jpg'
-img_path = './assets/test/digits.jpg'
+img_path = './assets/test/test_left.jpg'
 num_rows = 37
 
 parser = argparse.ArgumentParser()
@@ -37,28 +37,17 @@ if args.img_path:
 
 # Step 1
 print("Reading image from path", img_path)
-input_img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
+input_img = cv2.imread(img_path)#, cv2.IMREAD_GRAYSCALE)
 
 img_yatzy_sheet, img_binary_yatzy_sheet, img_binary_only_numbers, yatzy_cells_bounding_rects = sheet.generate_yatzy_sheet(input_img, num_rows_in_grid=num_rows)
 
-
-# img = cv2.imread('D:/Study/AI/Python/NhanDang/Main/digits.jpg',cv2.IMREAD_GRAYSCALE)
-
-# img_adaptive_binary = sheet.get_adaptive_binary_image(img)
-
-# img_binary_yatzy_sheet = sheet.get_rotated_yatzy_sheet(img, img_adaptive_binary)
-
-# img_yatzy_sheet, img_binary_yatzy_sheet, img_binary_grid, yatzy_cells_bounding_rects = sheet.generate_yatzy_sheet(img)
-
-# img_binary_gird, img_binary_sheet_only_digits = sheet.get_yatzy_grid(img_binary_yatzy_sheet)
-
-# yatzy_cells_bounding_rects, yatzy_grid_bounding_rect = sheet.get_yatzy_cells_bounding_rects(img_binary_gird)
 
 img_yatzy_cells = img_yatzy_sheet.copy()
 cv_utils.draw_bounding_rects(img_yatzy_cells, yatzy_cells_bounding_rects)
 cv_utils.show_window('img_yatzy_cells', img_yatzy_cells)
 
 digit_contours = cv_utils.get_external_contours(img_binary_only_numbers)
+
 
 for i, cnt in enumerate(digit_contours):
 
@@ -115,11 +104,3 @@ for i, cnt in enumerate(digit_contours):
 cv_utils.show_window('img_yatzy_sheet', img_yatzy_sheet, debug=True)
 cv_utils.show_window('img_binary_yatzy_sheet', img_binary_yatzy_sheet)
 cv_utils.show_window('img_binary_only_numbers', img_binary_only_numbers)
-
-# cv2.imshow('image' , img_binary_yatzy_sheet)
-# cv2.waitKey(0)
-# cv2.imshow('image' , img_yatzy_sheet)
-# cv2.waitKey(0)
-# cv2.imshow('image' , img_yatzy_cells)
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
