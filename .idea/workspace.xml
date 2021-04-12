@@ -14,9 +14,8 @@
       <change beforePath="$PROJECT_DIR$/assets/output/morph_keep_only_horizontal_lines.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/output/morph_keep_only_horizontal_lines.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assets/output/morph_keep_only_vertical_lines.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/output/morph_keep_only_vertical_lines.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assets/output/yatzy_grid_binary_lines.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/output/yatzy_grid_binary_lines.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/test/digits.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/assets/test/digits.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/test/test.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cv_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/cv_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/test/test_left.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/assets/test/test_left.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/test/test_right.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/assets/test/test_right.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/python_work.py" beforeDir="false" afterPath="$PROJECT_DIR$/python_work.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sheet.py" beforeDir="false" afterPath="$PROJECT_DIR$/sheet.py" afterDir="false" />
     </list>

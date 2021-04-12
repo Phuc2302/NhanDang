@@ -15,12 +15,12 @@ predict_model = tf.keras.models.load_model('./models/model_tensorflow')
 predict_model.summary()
 
 # img_path = 'D:/Study/AI/Python/NhanDang/Main/digits.jpg'
-img_path = './assets/test/test_left.jpg'
+img_path = './assets/test/test2.jpg'
 num_rows = 37
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("--num_rows", help="set num rows of the yatzy grid")
+parser.add_argument("--num_rows", help="set num rows of the grid")
 parser.add_argument("--img_path", help="specify path to input image")
 parser.add_argument("--debug", help="specify debug to stop at show_window")
 
@@ -39,12 +39,12 @@ if args.img_path:
 print("Reading image from path", img_path)
 input_img = cv2.imread(img_path)#, cv2.IMREAD_GRAYSCALE)
 
-img_yatzy_sheet, img_binary_yatzy_sheet, img_binary_only_numbers, yatzy_cells_bounding_rects = sheet.generate_yatzy_sheet(input_img, num_rows_in_grid=num_rows)
+img_sheet, img_binary_sheet, img_binary_only_numbers, cells_bounding_rects = sheet.generate_sheet(input_img, num_rows_in_grid=num_rows)
 
 
-img_yatzy_cells = img_yatzy_sheet.copy()
-cv_utils.draw_bounding_rects(img_yatzy_cells, yatzy_cells_bounding_rects)
-cv_utils.show_window('img_yatzy_cells', img_yatzy_cells)
+img_cells = img_sheet.copy()
+cv_utils.draw_bounding_rects(img_cells, cells_bounding_rects)
+cv_utils.show_window('img_cells', img_cells)
 
 digit_contours = cv_utils.get_external_contours(img_binary_only_numbers)
 
@@ -55,13 +55,13 @@ for i, cnt in enumerate(digit_contours):
     digit_bounding_rect = cv2.boundingRect(cnt)
     x, y, w, h = digit_bounding_rect
 
-    # Identify if and to which yatzy cell this bounding rect belongs to
-    yatzy_cell = sheet.validate_and_find_yatzy_cell(yatzy_cells_bounding_rects, digit_bounding_rect)
-    if yatzy_cell is None:
+    # Identify if and to which cell this bounding rect belongs to
+    cell = sheet.validate_and_find_cell(cells_bounding_rects, digit_bounding_rect)
+    if cell is None:
         continue
 
     # Black/white binary version of the roi
-    roi = img_binary_yatzy_sheet[y:y + h, x:x + w]
+    roi = img_binary_sheet[y:y + h, x:x + w]
 
     roi_fit_20x20 = 20 / max(roi.shape[0], roi.shape[1])
 
@@ -95,12 +95,12 @@ for i, cnt in enumerate(digit_contours):
     predicted_digit = np.argmax(prediction)
 
     # Mark them on the image
-    cv2.rectangle(img_yatzy_sheet, (x, y), (x + w, y + h), (100, 10, 100), 1)
+    cv2.rectangle(img_sheet, (x, y), (x + w, y + h), (100, 10, 100), 1)
 
-    cv2.putText(img_yatzy_sheet, str(predicted_digit), (x + int(w / 2), y + int(h / 2)), cv2.FONT_HERSHEY_SIMPLEX, .7,
+    cv2.putText(img_sheet, str(predicted_digit), (x + int(w / 2), y + int(h / 2)), cv2.FONT_HERSHEY_SIMPLEX, .7,
                 (0, 0, 255), 2, cv2.LINE_AA)
 
 
-cv_utils.show_window('img_yatzy_sheet', img_yatzy_sheet, debug=True)
-cv_utils.show_window('img_binary_yatzy_sheet', img_binary_yatzy_sheet)
+cv_utils.show_window('img_sheet', img_sheet, debug=True)
+cv_utils.show_window('img_binary_sheet', img_binary_sheet)
 cv_utils.show_window('img_binary_only_numbers', img_binary_only_numbers)
