@@ -1,11 +1,12 @@
 import tensorflow as tf
 import argparse
-
+import pytesseract
 import numpy as np
 
 import cv2
 import cv_utils
 import sheet
+# import convert
 
 
 
@@ -15,7 +16,7 @@ predict_model = tf.keras.models.load_model('./models/model_tensorflow')
 predict_model.summary()
 
 # img_path = 'D:/Study/AI/Python/NhanDang/Main/digits.jpg'
-img_path = './assets/test/test2.jpg'
+img_path = './assets/test/2.jpg'
 num_rows = 37
 
 parser = argparse.ArgumentParser()
@@ -94,11 +95,30 @@ for i, cnt in enumerate(digit_contours):
 
     predicted_digit = np.argmax(prediction)
 
+    # print(predicted_digit)
+
     # Mark them on the image
     cv2.rectangle(img_sheet, (x, y), (x + w, y + h), (100, 10, 100), 1)
 
-    cv2.putText(img_sheet, str(predicted_digit), (x + int(w / 2), y + int(h / 2)), cv2.FONT_HERSHEY_SIMPLEX, .7,
+    cv2.putText(img_sheet, str(predicted_digit), (x + int(w / 2) + 40, y + int(h / 30) + 30), cv2.FONT_HERSHEY_SIMPLEX, .7,
                 (0, 0, 255), 2, cv2.LINE_AA)
+
+
+    import csv
+
+    # import os
+    #
+    # if os.path.exists('./assets/output_data/data.csv'):
+    #     os.remove('./assets/output_data/data.csv')
+    # else:
+    #     print("The file does not exists")
+
+    arr = np.array([predicted_digit])
+
+    outfile = open('./assets/output_data/data.csv', 'a')
+    out = csv.writer(outfile)
+    out.writerows(map(lambda x: [x], reversed(arr)))
+    outfile.close()
 
 
 cv_utils.show_window('img_sheet', img_sheet, debug=True)
